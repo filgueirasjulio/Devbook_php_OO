@@ -2,26 +2,30 @@
 
 require 'config.php';
 require 'models/Auth.php';
-
-$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-$password = filter_input(INPUT_POST, 'password');
-
-if (!$email) {
-    $_SESSION['flash'] = 'Preencha o seu email';
-    header("Location: " . $base . "/login.php");
-    exit;
-}
-
-if (!$password) {
-    $_SESSION['flash'] = 'Preencha a sua senha';
-    header("Location: " . $base . "/login.php");
-    exit;
-}
+require 'requests/auth/LoginRequest.php';
 
 $auth = new Auth($pdo, $base);
 
+$data = [
+    'email' => $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL),
+    'password' => $password = filter_input(INPUT_POST, 'password'),
+];
+
+#validações
+$_SESSION['form'] = [
+    'email' => $email ?? '',
+];
+
+$is_validated = new  LoginRequest($data);
+if(!$is_validated->validate()) {
+    header("Location: " . $base . "/login.php");
+    exit;
+}
+
+#login
 if (!$auth->validateLogin($email, $password)) {
-    $_SESSION['flash'] = 'E-mail e/ou senha errados';
+    $_SESSION['flash']['message'] = 'E-mail e/ou senha errados';
+    $_SESSION['flash']['status'] = 'danger';
     header("Location: " . $base . "/login.php");
     exit;
 }

@@ -45,4 +45,30 @@ class Auth {
            }
        }
     }
+
+    public function emailExists($email)
+    {
+        $userDao = new UserDaoMysql($this->pdo);
+        return $userDao->findByEmail($email) ? true : false;
+    }
+
+    public function registerUser($data) {
+        $userDao = new UserDaoMysql($this->pdo);
+
+        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
+        $token = md5(time().rand(0, 9999));
+        $birthdate = explode('/', $data['birthdate']);
+        $birthdate = $birthdate[2].'-'.$birthdate[1].'-'.$birthdate[0];
+
+        $newUser = new User();
+        $newUser->name = $data['name'];
+        $newUser->email = $data['email'];
+        $newUser->password = $hash;
+        $newUser->birthdate = $birthdate;
+        $newUser->token = $token;
+
+        $userDao->create($newUser);
+
+        $_SESSION['token'] = $token;
+    }
 }
