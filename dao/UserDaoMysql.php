@@ -9,18 +9,20 @@ class UserDaoMysql implements UserDAO {
         $this->pdo = $driver;
     }
 
-    private function generateUser() {
+    private function generateUser($data) {
         $user = new User();
-        $user->id = $array['id'] ?? null;
-        $user->email = $array['email'] ?? null;
-        $user->name = $array['name'] ?? null;
-        $user->birthdate = $array['birthdate'] ?? null;
-        $user->city = $array['city'] ?? null;
-        $user->work = $array['work'] ?? null;
-        $user->avatar = $array['avatar'] ?? null;
-        $user->cover = $array['cover'] ?? null;
-        $user->token = $array['token'] ?? null;
 
+        $user->id = $data['id'] ?? null;
+        $user->email = $data['email'] ?? null;
+        $user->password = $data['password'] ?? null;
+        $user->name = $data['name'] ?? null;
+        $user->birthdate = $data['birthdate'] ?? null;
+        $user->city = $data['city'] ?? null;
+        $user->work = $data['work'] ?? null;
+        $user->avatar = $data['avatar'] ?? null;
+        $user->cover = $data['cover'] ?? null;
+        $user->token = $data['token'] ?? null;
+ 
         return $user;
     }
 
@@ -39,6 +41,7 @@ class UserDaoMysql implements UserDAO {
 
         return false;
     }
+
 
     public function findByEmail($email) {
         if(!empty($email)) {
@@ -73,9 +76,8 @@ class UserDaoMysql implements UserDAO {
         return true;
     } 
 
-    public function update(User $user)
-    {
-        $sql = $this->pdo->prepare("UPDATE users SET
+    public function update(User $user) {
+        $sql = $this->pdo->prepare("UPDATE users SET 
             email = :email,
             password = :password,
             name = :name,
@@ -84,21 +86,22 @@ class UserDaoMysql implements UserDAO {
             work = :work,
             avatar = :avatar,
             cover = :cover,
-            token = :token,
+            token = :token
             WHERE id = :id");
 
-            $sql->bindValue(':email', $user->email);
-            $sql->bindValue(':password', $user->password);
-            $sql->bindValue(':name', $user->name);
-            $sql->bindValue(':birthdate', $user->birthdate);
-            $sql->bindValue(':city', $user->city);
-            $sql->bindValue(':work', $user->work);
-            $sql->bindValue(':avatar', $user->avatar);
-            $sql->bindValue(':cover', $user->cover);
-            $sql->bindValue(':token', $user->token);
-            $sql->bindValue(':id', $user->id);
-            $sql->execute();
+        $sql->bindValue(':email', $user->email);
+        $sql->bindValue(':password', $user->password);
+        $sql->bindValue(':name', $user->name);
+        $sql->bindValue(':birthdate', $user->birthdate);
+        $sql->bindValue(':city', $user->city);
+        $sql->bindValue(':work', $user->work);
+        $sql->bindValue(':avatar', $user->avatar);
+        $sql->bindValue(':cover', $user->cover);
+        $sql->bindValue(':token', $user->token);
+        $sql->bindValue(':id', $user->id);
+        $sql->execute();
 
-            return true;
+        return true;
     }
+
 }

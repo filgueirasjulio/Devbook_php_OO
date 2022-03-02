@@ -7,3 +7,4 @@ $auth = new Auth($pdo, $base);
 $userInfo = $auth->checkToken($pdo);
 
 echo 'Index';
+
