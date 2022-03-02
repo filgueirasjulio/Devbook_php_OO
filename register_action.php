@@ -29,9 +29,9 @@ if(!$is_validated->validate()) {
 if($auth->emailExists($email) === false) {
 
     $auth->registerUser($data);
+    unset($_SESSION['form']); 
     header("Location: ".$base);
     exit;
-
 } else {
     $_SESSION['flash'] = 'E-mail já cadastrado';
     header("Location: ".$base."/signup.php");
