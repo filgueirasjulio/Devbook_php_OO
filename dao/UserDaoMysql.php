@@ -27,6 +27,7 @@ class UserDaoMysql implements UserDAO {
         if($full) {
             //se tem de obter informações completas: seguidos, seguidos pelo usuário e fotos.
             $userDaoMysql = new UserRelationDaoMysql($this->pdo);
+            $postDaoMysql = new PostDaoMysql($this->pdo);
 
             //transformamos um array de números em um de objetos
             $user->followers = $userDaoMysql->getFollowers($user->id);
@@ -41,7 +42,7 @@ class UserDaoMysql implements UserDAO {
                 $user->followings[$key] = $newUser;
             }
 
-            $user->photos =  [];
+            $user->photos = $postDaoMysql->getPhotosFrom($user->id);
         }
  
         return $user;
