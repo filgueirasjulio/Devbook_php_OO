@@ -30,7 +30,8 @@ class PostDaoMysql implements PostDAO {
         $feedList = [];
 
         $userRelation = new UserRelationDaoMysql($this->pdo);
-        $userList = $userRelation->getRelationsFrom($userId);
+        $userList = $userRelation->getFollowing($userId);
+        $userList[] = $userId;
      
         $sql = $this->pdo->query("SELECT * FROM posts 
         WHERE user_id IN (".implode(',', $userList).")
@@ -63,8 +64,7 @@ class PostDaoMysql implements PostDAO {
   
             //informações sobre o usuário que realizou o post
             $newPost->user = $userDao->findById($post_item['user_id']);
-           // print_r($posts);
-           // exit;
+
             //informações sobre like
             //TO DO
             $newPost->likeCount = 0;

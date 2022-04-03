@@ -1,6 +1,7 @@
 <?php
 
 require_once 'models/User.php';
+require_oNce 'dao/UserRelationDaoMysql.php';
 
 class UserDaoMysql implements UserDAO {
     private $pdo;
@@ -9,7 +10,7 @@ class UserDaoMysql implements UserDAO {
         $this->pdo = $driver;
     }
 
-    private function generateUser($data) {
+    private function generateUser($data, $full = false) {
         $user = new User();
 
         $user->id = $data['id'] ?? null;
@@ -22,6 +23,16 @@ class UserDaoMysql implements UserDAO {
         $user->avatar = $data['avatar'] ?? null;
         $user->cover = $data['cover'] ?? null;
         $user->token = $data['token'] ?? null;
+
+        if($full) {
+            //se tem de obter informações completas: seguidos, seguidos pelo usuário e fotos.
+            $userDaoMysql = new UserRelationDaoMysql($this->pdo);
+
+            $user->followers = $userDaoMysql->getFollowers($user->id);
+            $user->following = $userDaoMysql->getFollowing($user->id);
+
+            $user->photos =  [];
+        }
  
         return $user;
     }
@@ -58,7 +69,7 @@ class UserDaoMysql implements UserDAO {
         return false;
     }
 
-    public function findById($id) {
+    public function findById($id, $full = false) {
         if(!empty($id)) {
             $sql = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
             $sql->bindValue(':id', $id);
@@ -66,7 +77,7 @@ class UserDaoMysql implements UserDAO {
 
             if($sql->rowCount() > 0) {
                 $data = $sql->fetch(PDO::FETCH_ASSOC);
-                $user = $this->generateUser($data);
+                $user = $this->generateUser($data, $full);
                 return $user;
             }
         }
