@@ -12,6 +12,13 @@ if (!$id) {
     $id = $userInfo->id;
 }
 
+$user = [];
+$feed = [];
+
+if($id == $userInfo->id) {
+   $activeMenu = '';
+}
+
 $postDao = new PostDaoMysql($pdo);
 $userDao = new UserDaoMysql($pdo);
 
@@ -153,6 +160,10 @@ require 'partials/menu.php';
                     <?php endif; ?>
                 </div>
             </div>
+
+            <?php if($id == $userInfo->id): ?>
+                <?php require 'partials/feed-editor.php'?>
+            <?php endif; ?>
 
             <?php if(count($feed) > 0): ?>
                 <?php foreach($feed as $item): ?>
