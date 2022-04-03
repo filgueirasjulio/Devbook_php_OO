@@ -11,4 +11,5 @@ class Post {
 interface PostDAO {
     public function  create(Post $post);
     public function getHomeFeed($userId); 
+    public function getUserFeed($userId);
 }
