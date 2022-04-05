@@ -106,16 +106,15 @@ require 'partials/menu.php';
                 <div class="box-header m-10">
                     <div class="box-header-text">
                         Seguindo
-                        <span>(<?=count($user->followings);?>)</span>
+                        <span>(<?=count($user->following);?>)</span>
                     </div>
                     <div class="box-header-buttons">
                         <a href="<?=$base;?>/friends.php?id=<?=$user->id;?>">ver todos</a>
                     </div>
                 </div>
                 <div class="box-body friend-list">
-                    <?php if(count($user->followings) > 0): ?>
-                        <?php foreach($user->followings as $item): ?>
-                 
+                    <?php if(count($user->following) > 0): ?>
+                        <?php foreach($user->following as $item): ?>  
                             <div class="friend-icon">
                                 <a href="<?=$base;?>/profile.php?id=<?=$item->id;?>">
                                     <div class="friend-icon-avatar">

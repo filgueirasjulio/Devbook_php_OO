@@ -39,7 +39,7 @@ class UserDaoMysql implements UserDAO {
             $user->following = $userDaoMysql->getFollowing($user->id);
             foreach($user->following as $key => $following_id) {
                 $newUser = $this->findById($following_id);
-                $user->followings[$key] = $newUser;
+                $user->following[$key] = $newUser;
             }
 
             $user->photos = $postDaoMysql->getPhotosFrom($user->id);
