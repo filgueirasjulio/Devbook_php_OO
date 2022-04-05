@@ -8,14 +8,15 @@ $userInfo = $auth->checkToken();
 $activeMenu = 'profile';
 
 $id = filter_input(INPUT_GET, 'id');
-if (!$id) {
-    $id = $userInfo->id;
-}
 
 $user = [];
 $feed = [];
 
-if($id == $userInfo->id) {
+if (!$id) {
+    $id = $userInfo->id;
+}
+
+if($id != $userInfo->id) {
    $activeMenu = '';
 }
 
@@ -32,7 +33,7 @@ $dateFrom = new DateTime($user->birthdate);
 $dateTo = new DateTime('today');
 $user->ageYears = $dateFrom->diff($dateTo)->y;
 
-$feed = $postDao->getUserFeed($userInfo->id);
+$feed = $postDao->getUserFeed($id);
 
 require 'partials/header.php';
 require 'partials/menu.php';
@@ -148,11 +149,11 @@ require 'partials/menu.php';
                     <?php if(count($user->photos) > 0): ?>
                         <?php foreach($user->photos as $item): ?>
                             <div class="user-photo-item">
-                                <a href="#modal-1" rel="modal:open">
-                                    <img src="<?=$base;?>/media/uploads/<?=$item->body;?>" />
+                                <a href="#modal-<?=$key;?>" rel="modal:open">
+                                    <img src="<?$base;?>/media/uploads/<?$item->body?>" />
                                 </a>
-                                <div id="modal-1" style="display:none">
-                                    <img src="<?=$base;?>/media/uploads/<?=$item->body;?>" />
+                                <div id="#modal-<?=$key;?>" style="display:none">
+                                    <img src="<?$base;?>/media/uploads/<?$item->body?>" />
                                 </div>
                             </div>
                         <?php endforeach; ?>
