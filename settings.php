@@ -27,7 +27,7 @@ require 'partials/menu.php';
             Nova Capa:</br>
             <input type="file" name="cover" /><br/>
 
-            <img class="mini" src="<?=$base;?>/media/covers/<?=$userInfo->avatar ?? 'cover.jpg';?>" alt="cover">
+            <img class="mini" src="<?=$base;?>/media/covers/<?=$userInfo->cover ?? 'cover.jpg';?>" alt="cover">
         </label>
 
         <hr/>

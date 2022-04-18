@@ -3,11 +3,13 @@ require 'config.php';
 require 'models/Auth.php';
 require_once 'dao/UserDaoMysql.php';
 require 'requests/SettingsRequest.php';
+require 'helpers/UploadHelper.php';
 
 $auth = new Auth($pdo, $base);
 $userInfo = $auth->checkToken();
 
 $userDao = new UserDaoMysql($pdo);
+$uploadHelper = new UploadHelper();
 
 $data = [
    'name' => $name = filter_input(INPUT_POST, 'name'),
@@ -64,6 +66,31 @@ if(!empty($password)) {
         exit;
     }
 }
+
+//avatar
+if(isset($_FILES['avatar']) && !empty($_FILES['avatar']['tmp_name'])) {
+    $newAvatar = $_FILES['avatar'];
+
+    $finalImage = $uploadHelper->execute($newAvatar, 200, 200);
+
+    $avatarName = md5(time().rand(0,999).'.'.$newAvatar['type']);
+    imagejpeg($finalImage, './media/avatars/'.$avatarName, 100);
+    $userInfo->avatar = $avatarName;
+  
+}
+
+//cover
+if(isset($_FILES['cover']) && !empty($_FILES['cover']['tmp_name'])) {
+    $newCover = $_FILES['cover'];
+
+    $finalImage = $uploadHelper->execute($newCover, 850, 313);
+
+    $coverName = md5(time().rand(0,999).'.'.$newCover['type']);
+    imagejpeg($finalImage, './media/covers/'.$coverName, 100);
+    $userInfo->cover = $coverName;
+  
+}
+
 
 $userDao->update($userInfo);
 
