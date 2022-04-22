@@ -38,6 +38,19 @@ require_once 'feed-item-script.php';
             <div class="msg-btn"><?=count($item->comments);?></div>
         </div>
         <div class="feed-item-comments">
+            <div class="feed-item-comments-area">
+                <?php foreach($item->comments as $comment): ?>
+                    <div class="fic-item row m-height-10 m-width-20">
+                        <div class="fic-item-photo">
+                            <a href="<?=$base;?>/profile.php?id=<?=$comment->user_id;?>">  <img src="<?= $base;?>/media/avatars/<?=$comment->user->avatar ?? 'default.jpg';?>" /></a>
+                        </div>
+                        <div class="fic-item-info">
+                            <a href=""><?=$comment->user->name;?></a>
+                            <?=$comment->body;?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
 
             <div class="fic-answer row m-height-10 m-width-20">
                 <div class="fic-item-photo">
