@@ -2,6 +2,7 @@
 require_once 'config.php';
 require_once 'models/Auth.php';
 require_once 'dao/PostDaoMysql.php';
+require_once 'dao/UserRelationDaoMysql.php';
 
 $auth = new Auth($pdo, $base);
 $userInfo = $auth->checkToken();
@@ -22,6 +23,7 @@ if($id != $userInfo->id) {
 
 $postDao = new PostDaoMysql($pdo);
 $userDao = new UserDaoMysql($pdo);
+$userRelationDao = new UserRelationDaoMysql($pdo);
 
 $user = $userDao->findById($id, true);
 if (!$user) {
@@ -35,6 +37,8 @@ $user->ageYears = $dateFrom->diff($dateTo)->y;
 
 $feed = $postDao->getUserFeed($id);
 
+$isFollowing = $userRelationDao->isFollowing($userInfo->id, $id);
+
 require 'partials/header.php';
 require 'partials/menu.php';
 ?>
@@ -47,7 +51,7 @@ require 'partials/menu.php';
                 <div class="profile-cover" style="background-image: url('<?=$base;?>/media/covers/<?=$user->cover;?>');"></div>
                 <div class="profile-info m-20 row">
                     <div class="profile-info-avatar">
-                        <img src="media/avatars/<?=$userInfo->avatar ?? 'default.jpg';?>" />
+                        <img src="media/avatars/<?=$user->avatar ?? 'default.jpg';?>" />
                     </div>
                     <div class="profile-info-name">
                         <div class="profile-info-name-text"><?=$user->name;?></div>
@@ -56,6 +60,13 @@ require 'partials/menu.php';
                         <?php endif; ?>
                     </div>
                     <div class="profile-info-data row">
+                        <?php if($id != $userInfo->id): ?>
+                        <div class="profile-info-item m-width-20">
+                            <a href="follow_action.php?id=<?=$id;?>" class="button">
+                                <?=(!$isFollowing)?'Seguir':'Deixar de Seguir'?>
+                            </a>
+                        </div>
+                        <?php endif; ?>
                         <div class="profile-info-item m-width-20">
                             <div class="profile-info-item-n"><?=count($user->followers);?></div>
                             <div class="profile-info-item-s">Seguidores</div>
