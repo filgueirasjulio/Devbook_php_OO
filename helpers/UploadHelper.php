@@ -43,6 +43,8 @@ class UploadHelper {
            );
      
            return $finalImage;
+         } else {
+            return false;
          }
     }
 }
