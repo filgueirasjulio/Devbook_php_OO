@@ -26,9 +26,14 @@ require_once 'feed-item-script.php';
                 <br/>
                 <span class="fidi-date"><?=date('d/m/Y', strtotime($item->created_at));?></span>
             </div>
+            <?php if($item->mine): ?>
             <div class="feed-item-head-btn">
                 <img src="<?=$base;?>/assets/images/more.png" />
+                <div class="feed-item-more-window">
+                    <a href="<?=$base;?>/delete_post_action.php?id=<?=$item->id;?>">Excluir Publicação</a>
+                </div>
             </div>
+            <?php endif; ?>
         </div>
         <div class="feed-item-body mt-10 m-width-20">
             <?php
