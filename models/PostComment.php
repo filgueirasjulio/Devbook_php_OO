@@ -11,4 +11,5 @@ class PostComment {
 interface PostCommentDAO {
     public function  getComments($post_id);
     public function  addComment(PostComment $pc);
+    public function  deleteFromPost($post_id);
 }

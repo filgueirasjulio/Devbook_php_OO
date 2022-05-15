@@ -29,12 +29,34 @@ class PostDaoMysql implements PostDAO {
 
      public function delete($id, $user_id)
      {
-         $sql = $this->pdo->prepare("DELETE FROM posts 
-         WHERE id = :id AND user_id = :user_id");
+        $postLikeDao = new PostLikeDaoMysql($this->pdo);
+        $postCommentDao = new PostCommentDaoMysql($this->pdo);
 
-         $sql->bindValue(':id', $id);
-         $sql->bindValue(':user_id', $user_id);
-         $sql->execute();
+        $sql = $this->pdo->prepare("SELECT * FROM posts 
+        WHERE id = :id AND user_id = :user_id");
+        $sql->bindValue(':id', $id);
+        $sql->bindValue(':user_id', $user_id);
+        $sql->execute();
+
+        if($sql->rowCount() > 0) {
+            $post = $sql->fetch(PDO::FETCH_ASSOC);
+
+            $postLikeDao->deleteFromPost($id);
+            $postCommentDao->deleteFromPost($id);
+
+            if($post['type'] == 'photo') {
+                $img = 'media/uploads/'.$post['body'];
+                if(file_exists($img)) {
+                    unlink($img);
+                }
+            }
+
+            $sql = $this->pdo->prepare("DELETE FROM posts 
+            WHERE id = :id AND user_id = :user_id");
+            $sql->bindValue(':id', $id);
+            $sql->bindValue(':user_id', $user_id);
+            $sql->execute();
+        }
      }
     
      public function getHomeFeed($userId)
