@@ -98,20 +98,39 @@ class PostDaoMysql implements PostDAO {
 
      public function getUserFeed($userId)
      {
-        $feedList = [];
+        $array = ['feed' => array()];
+        $perPage = 5;
+        $page = intval(filter_input(INPUT_GET, 'p'));
+
+        if($page < 1) {
+            $page = 1;
+        }
+
+        $offset = ($page - 1) * $perPage;
      
         $sql = $this->pdo->prepare("SELECT * FROM posts 
         WHERE user_id = :user_id
-        ORDER BY created_at DESC");
+        ORDER BY created_at DESC LIMIT $offset, $perPage");
         $sql->bindValue(':user_id', $userId);
         $sql->execute();
 
         if($sql->rowCount() > 0) {
             $data = $sql->fetchAll(PDO::FETCH_ASSOC);
-            $feedList = $this->postListToObject($data, $userId);
+            $array['feed'] = $this->postListToObject($data, $userId);
         }
 
-        return $feedList;
+        $sql = $this->pdo->prepare("SELECT COUNT(*) as c FROM posts 
+        WHERE user_id = :user_id");
+        $sql->bindValue(':user_id', $userId);
+        $sql->execute();
+
+        $totalData = $sql->fetch();
+        $total = $totalData['c'];
+
+        $array['pages'] = ceil($total / $perPage);
+        $array['currentPage'] = $page;
+
+        return $array;
      }
 
      public function getPhotosFrom($userId)
