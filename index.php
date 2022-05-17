@@ -8,7 +8,14 @@ $userInfo = $auth->checkToken();
 $activeMenu = 'home';
 
 $postDao = new PostDaoMysql($pdo);
-$info = $postDao->getHomeFeed($userInfo->id);
+
+$page = intval(filter_input(INPUT_GET, 'p'));
+
+if($page < 1) {
+    $page = 1;
+}
+
+$info = $postDao->getHomeFeed($userInfo->id, $page);
 
 $feed = $info['feed'];
 $pages = $info['pages'];

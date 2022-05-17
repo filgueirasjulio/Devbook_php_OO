@@ -35,7 +35,13 @@ $dateFrom = new DateTime($user->birthdate);
 $dateTo = new DateTime('today');
 $user->ageYears = $dateFrom->diff($dateTo)->y;
 
-$info = $postDao->getUserFeed($id);
+$page = intval(filter_input(INPUT_GET, 'p'));
+
+if($page < 1) {
+    $page = 1;
+}
+
+$info = $postDao->getUserFeed($id, $page);
 $feed = $info['feed'];
 $pages = $info['pages'];
 $currentPage = $info['currentPage'];

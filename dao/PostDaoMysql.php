@@ -59,15 +59,10 @@ class PostDaoMysql implements PostDAO {
         }
      }
     
-     public function getHomeFeed($userId)
+     public function getHomeFeed($userId, $page = 1)
      {
         $array = [];
         $perPage = 5;
-        $page = intval(filter_input(INPUT_GET, 'p'));
-      
-        if($page < 1) {
-            $page = 1;
-        }
 
         $offset = ($page - 1) * $perPage;
 
@@ -96,15 +91,10 @@ class PostDaoMysql implements PostDAO {
         return $array;
      }
 
-     public function getUserFeed($userId)
+     public function getUserFeed($userId, $page = 1)
      {
         $array = ['feed' => array()];
         $perPage = 5;
-        $page = intval(filter_input(INPUT_GET, 'p'));
-
-        if($page < 1) {
-            $page = 1;
-        }
 
         $offset = ($page - 1) * $perPage;
      
